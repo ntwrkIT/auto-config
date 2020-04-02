@@ -1,0 +1,41 @@
+############################
+#      show commands       #
+############################
+end
+show run | sec aaa
+
+############################
+#      configuration      #
+############################
+conf t
+!
+username persgroep secret wavelan
+!
+aaa new-model
+!
+radius server ise-1
+ address ipv4 10.1.3.31 auth-port 1812 acct-port 1813
+ key sitnalta
+!
+radius server ise-2
+ address ipv4 10.1.3.32 auth-port 1812 acct-port 1813
+ key sitnalta
+!
+aaa group server radius ise
+server name ise-1
+server name ise-2
+ip radius source-interface Vlan55
+exit
+no aaa group server radius Persgroep
+!
+aaa authentication login default group ise local
+aaa authorization console
+aaa authorization exec default group ise if-authenticated 
+!
+aaa session-id common 
+
+############################
+#      show commands       #
+############################
+end
+show run | sec aaa
